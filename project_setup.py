@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict
+from typing import List
+
+# TODO: You might need to import additional modules for file path handling
+import os
+
 
 @dataclass
 class CodeFile:
@@ -8,71 +12,63 @@ class CodeFile:
     content: str
     language: str
     last_updated: datetime
-    file_size: int
 
-# TODO: Create a list of at least 5 CodeFile instances with different languages
-# Example: Python, JavaScript, Java, CSS, etc.
-code_files = code_files = [
-    # Add at least 5 CodeFile instances here
-    CodeFile(
+    # TODO: Add a get_file_extension method that extracts and returns the file extension from file_path
+    # The method should handle cases where there is no extension and return an appropriate default value
+    def get_file_extension(self):
+        extension = os.path.splitext(self.file_path)[-1]
+        return extension
+
+@dataclass
+class GitCommit:
+    hash: str
+    message: str
+    author: str
+    date: datetime
+
+
+@dataclass
+class FileChange:
+    file_path: str
+    commit_hash: str
+    diff_content: str
+
+
+if __name__ == "__main__":
+    # Create sample CodeFile instances with different file paths
+    python_file = CodeFile(
         file_path="src/main.py",
         content="print('Hello, world!')",
-        language="Python",
+        language="python",
         last_updated=datetime.now(),
-        file_size=25
-    ),
-
-    CodeFile(
-        file_path="src/app.js",
-        content="console.log('Hello, world!');",
-        language="JavaScript",
-        last_updated=datetime.now(),
-        file_size=30
-    ),
-
-    CodeFile(
-        file_path="src/app.java",
-        content='System.out.println("Hello, world!");',
-        language="Java",
-        last_updated=datetime.now(),
-        file_size=15
-    ),
-
-    CodeFile(
-        file_path="src/main.go",
-        content='package main\nimport "fmt"\nfunc main() {\n    fmt.Println("Hello, world!")\n}',
-        language="Go",
-        last_updated=datetime.now(),
-        file_size=60
-    ),
-
-    CodeFile(
-        file_path="src/styles.css",
-        content='body { margin: 0; padding: 0; }',
-        language="CSS",
-        last_updated=datetime.now(),
-        file_size=35
     )
-]
 
-# TODO: Create a dictionary to store the count of files per language
-language_counts = {}
+    javascript_file = CodeFile(
+        file_path="web/script.js",
+        content="console.log('Hello, world!');",
+        language="javascript",
+        last_updated=datetime.now(),
+    )
 
-# TODO: Write a loop to count files by language
-# The loop should iterate through code_files and update language_counts
-for code_file in code_files:
-    language = code_file.language
-    language_counts[language] = language_counts.get(language, 0) + 1
+    readme_file = CodeFile(
+        file_path="README",
+        content="# Project Documentation",
+        language="markdown",
+        last_updated=datetime.now(),
+    )
 
-# TODO: Display the counts in a readable format
-# Print a summary showing how many files belong to each language
-print("=" * 40)
-print("Code Files Summary by Language")
-print("=" * 40)
-for language, count in language_counts.items():
-    print(f"{language}: {count} file(s)")
-print("=" * 40)
-print(f"Total files: {len(code_files)}")
-if __name__ == "__main__":
-    # The code above will run when this file is executed directly
-    pass
+    dockerfile = CodeFile(
+        file_path="Dockerfile",
+        content="FROM python:3.9-slim",
+        language="dockerfile",
+        last_updated=datetime.now(),
+    )
+
+    code_files = [python_file, javascript_file, readme_file, dockerfile]
+
+    # TODO: Call the get_file_extension method on each CodeFile instance and print the results
+    # Make sure to display both the file path and its extension
+    for code_file in code_files:
+        print(f"{code_file.language} : {code_file.get_file_extension()}")
+
+    print("Project setup complete. Ready to build components!")
