@@ -37,8 +37,6 @@ class RepositoryScanner:
         print(f"Scanning: {repo_path}")
 
         for root, dirs, files in os.walk(repo_path):
-            # TODO: Add code to filter out directories in the exclude_dirs set
-            # This will prevent os.walk() from entering these directories
             dirs[:] = [d for d in dirs if d not in self.exclude_dirs]
             for file in files:
                 file_path = os.path.join(root, file)
@@ -47,17 +45,22 @@ class RepositoryScanner:
                 if self.detect_language(file_path) == 'Unknown':
                     continue
 
+                # TODO: Implement file reading with error handling:
                 try:
+                    # 1. Open the file with UTF-8 encoding
                     with open(file_path, 'r', encoding='utf-8') as f:
+                    # 2. Read the file contents
                         content = f.read()
-
+                    # 3. Create a CodeFile object with appropriate attributes
                     code_file = CodeFile(
                         file_path=relative_path,
                         content=content,
                         language=self.detect_language(file_path),
                         last_updated=datetime.now()
                     )
+                    # 4. Add the file to self.files
                     self.files.append(code_file)
+                # 5. Handle any exceptions that might occur
                 except Exception as e:
                     print(f"Error: {e}")
 
