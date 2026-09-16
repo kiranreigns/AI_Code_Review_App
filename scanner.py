@@ -37,8 +37,9 @@ class RepositoryScanner:
         print(f"Scanning: {repo_path}")
 
         for root, dirs, files in os.walk(repo_path):
+            # TODO: Add code to filter out directories in the exclude_dirs set
+            # This will prevent os.walk() from entering these directories
             dirs[:] = [d for d in dirs if d not in self.exclude_dirs]
-
             for file in files:
                 file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(file_path, repo_path)
