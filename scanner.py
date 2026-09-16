@@ -22,7 +22,8 @@ class RepositoryScanner:
             '.go': "Go",
             '.html': 'HTML',
             '.css': 'CSS',
-            '.php': 'PHP'
+            '.php': 'PHP',
+            '.rb': 'Ruby'
 
         }
         self.exclude_dirs = {'.git', 'node_modules', '__pycache__', '.venv'}
