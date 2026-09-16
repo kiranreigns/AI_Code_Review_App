@@ -13,16 +13,23 @@ class CodeFile:
 class RepositoryScanner:
     def __init__(self):
         self.language_map = {
-            '.py': 'Python', '.js': 'JavaScript', '.java': 'Java',
-            '.cpp': 'C++', '.ts': 'TypeScript'
+            '.py': 'Python',
+            '.js': 'JavaScript',
+            '.java': 'Java',
+            '.cpp': 'C++',
+            '.ts': 'TypeScript',
+            # TODO: Add at least 3 more language mappings (like HTML, CSS, PHP, etc.)
+            '.go': "Go",
+            '.html': 'HTML',
+            '.css': 'CSS',
+            '.php': 'PHP'
+
         }
-        self.exclude_dirs = {'.git', 'node_modules', '__pycache__'}
+        self.exclude_dirs = {'.git', 'node_modules', '__pycache__', '.venv'}
         self.files = []
 
     def detect_language(self, file_path):
-        # TODO: Extract the file extension (suffix) from the file_path, convert it to lowercase,
         suffix = Path(file_path).suffix.lower()
-        # and return the corresponding language from language_map or 'Unknown' if not found
         return self.language_map.get(suffix, 'Unknown')
 
     def scan_repository(self, repo_path):
