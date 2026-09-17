@@ -13,20 +13,10 @@ class CodeFile:
 class RepositoryScanner:
     def __init__(self):
         self.language_map = {
-            '.py': 'Python',
-            '.js': 'JavaScript',
-            '.java': 'Java',
-            '.cpp': 'C++',
-            '.ts': 'TypeScript',
-            # TODO: Add at least 3 more language mappings (like HTML, CSS, PHP, etc.)
-            '.go': "Go",
-            '.html': 'HTML',
-            '.css': 'CSS',
-            '.php': 'PHP',
-            '.rb': 'Ruby'
-
+            '.py': 'Python', '.js': 'JavaScript', '.java': 'Java',
+            '.cpp': 'C++', '.ts': 'TypeScript'
         }
-        self.exclude_dirs = {'.git', 'node_modules', '__pycache__', '.venv'}
+        self.exclude_dirs = {'.git', 'node_modules', '__pycache__'}
         self.files = []
 
     def detect_language(self, file_path):
@@ -34,10 +24,12 @@ class RepositoryScanner:
         return self.language_map.get(suffix, 'Unknown')
 
     def scan_repository(self, repo_path):
+        self.files = []
         print(f"Scanning: {repo_path}")
 
         for root, dirs, files in os.walk(repo_path):
             dirs[:] = [d for d in dirs if d not in self.exclude_dirs]
+
             for file in files:
                 file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(file_path, repo_path)
@@ -70,7 +62,7 @@ class RepositoryScanner:
 
 if __name__ == "__main__":
     scanner = RepositoryScanner()
-    repo_path = "../chatbot"
+    repo_path = "./sample-ecommerce-api"
     files = scanner.scan_repository(repo_path)
     print(f"Found {len(files)} code files in {repo_path}.")
     for code_file in files:
