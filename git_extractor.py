@@ -60,6 +60,22 @@ class GitHistoryExtractor:
         print(f"Found {len(self.commits)} commits, {len(self.file_changes)} changes")
         return self.commits
 
+    def get_file_change_count(self):
+        """
+        Count how many times each file has been changed across all commits.
+
+        Returns:
+            dict: A dictionary where keys are file paths (str) and values are the number of changes (int)
+        """
+        # TODO: Implement this function
+        file_counts =  {}
+        if not self.file_changes:
+            return None
+        print("File change counts:")
+        for file_change in self.file_changes:
+            file_counts[file_change.file_path] = file_counts.get(file_change.file_path, 0) + 1
+        return file_counts
+
 
 def main():
     extractor = GitHistoryExtractor()
@@ -102,6 +118,24 @@ def main():
         # TODO: Add logic to handle the case when no commits match the filter
         if len(extractor.commits) == 0:
             print("No commits found for this author.")
+
+        print("#" * 100 )
+        print()
+
+        # TODO: Call the get_file_change_count method and store the result
+        result = extractor.get_file_change_count()
+        # TODO: Add code to display the file change counts
+
+        # TODO: Sort the files by change count (most frequent first)
+        sorted_result = sorted(result.items(), key=lambda x: x[1], reverse=True)
+        for file_change, count in sorted_result:
+            if count <= 1:
+                print(f"{file_change}: {count} change")
+            else:
+                print(f"{file_change}: {count} changes")
+        # TODO: Handle the case where no file changes were found
+        if result is None:
+            print("No file changes found.")
 
     except Exception as e:
         print(f"Error extracting git history: {e}")
