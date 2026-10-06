@@ -23,15 +23,24 @@ class GitHistoryExtractor:
         self.commits = []
         self.file_changes = []
 
-    def extract_commits(self, repo_path, max_commits=50):
+    # TODO: Add an author_filter parameter with a default value of None
+    def extract_commits(self, repo_path, max_commits=50, author_filter=None):
         print(f"Extracting git history: {repo_path}")
         repo = Repo(repo_path)
 
         for commit in repo.iter_commits(max_count=max_commits):
+            author_name = commit.author.name
+
+            # TODO: Add a condition to check if the commit's author name contains the filter string (case-insensitive)
+            if author_filter is not None and author_filter.lower() not in author_name.lower():
+
+            # TODO: Skip commits that don't match the author filter
+                continue
+
             git_commit = GitCommit(
                 hash=commit.hexsha,
                 message=commit.message.strip(),
-                author=f"{commit.author.name} <{commit.author.email}>",
+                author=f"{author_name} <{commit.author.email}>",
                 date=commit.committed_datetime
             )
             self.commits.append(git_commit)
@@ -66,17 +75,33 @@ def main():
         return
 
     try:
+        # Extract all commits first
         commits = extractor.extract_commits(repo_path, max_commits=10)
 
         # Display first few commits
-        print("\nRecent commits:")
+        print("\nAll recent commits:")
         for i, commit in enumerate(commits[:3]):
-            # TODO: Change the commit hash display to show only the first 6 characters (instead of 8)
-            # TODO: Change the commit message display to show only the first 30 characters (instead of 50)
-            print(f"{i+1}. {commit.hash[:6]} - {commit.message[:30]}...")
+            print(f"{i+1}. {commit.hash[:8]} - {commit.message[:50]}...")
             print(f"   Author: {commit.author}")
             print(f"   Date: {commit.date}")
             print()
+
+        # TODO: Reset the extractor and create a new instance
+        extractor = GitHistoryExtractor()
+        # TODO: Define an author name to filter by (e.g., "Alice")
+        author_filter = "Kiran"
+        # TODO: Call extract_commits with the author_filter parameter
+        filtered_commits = extractor.extract_commits(repo_path, max_commits=10, author_filter=author_filter)
+        # TODO: Display filtered commits with appropriate header
+        print(f"\nCommits by {author_filter}: \n")
+        for i, commit in enumerate(filtered_commits):
+            print(f"{i+1}. {commit.hash[:8]} - {commit.message[:50]}...")
+            print(f"   Author: {commit.author}")
+            print(f"   Date: {commit.date}")
+            print()
+        # TODO: Add logic to handle the case when no commits match the filter
+        if len(extractor.commits) == 0:
+            print("No commits found for this author.")
 
     except Exception as e:
         print(f"Error extracting git history: {e}")
