@@ -1,4 +1,5 @@
 import os
+from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime
 
@@ -75,6 +76,27 @@ class GitHistoryExtractor:
             file_counts[file_change.file_path] = file_counts.get(file_change.file_path, 0) + 1
         return file_counts
 
+    # Add a generate_commit_summary method that returns a dictionary with repository statistics
+    # The method should include: total_commits, unique_authors, most_active_author, most_changed_file, and date_range
+    def generate_commit_summary(self):
+        if not self.commits:
+            return None
+        total_commits = len(self.commits)
+        author_counts = Counter(commit.author for commit in self.commits)
+        most_active_author = author_counts.most_common(1)[0][0]
+        file_counts = self.get_file_change_count()
+        most_changed_file = max(file_counts, key=file_counts.get) if file_counts else None
+        dates = [c.date for c in self.commits]
+        date_range = f"{min(dates).strftime('%d-%m-%Y')} to {max(dates).strftime('%d-%m-%Y')}"
+
+        return {
+            "total_commits": total_commits,
+            "unique_authors": len(author_counts),
+            "most_active_author": most_active_author,
+            "most_changed_file": most_changed_file,
+            "date_range": date_range
+        }
+
 
 def main():
     extractor = GitHistoryExtractor()
@@ -115,7 +137,7 @@ def main():
             print(f"   Date: {commit.date}")
             print()
         # Add logic to handle the case when no commits match the filter
-        if len(extractor.commits) == 0:
+        if not extractor.commits:
             print("No commits found for this author.")
 
         print("#" * 100)
@@ -150,8 +172,21 @@ def main():
             print(f"   Date: {commit.date}")
             print()
         # Handle the case when no commits match the filter
-        if len(extractor.commits) == 0:
+        if not extractor.commits:
             print("No commits found for these file types.")
+
+        #Call the generate_commit_summary method and store the result
+        commit_summary = extractor.generate_commit_summary()
+        # Add code to display the summary information with appropriate formatting
+        # Include total commits, unique authors, most active author, most changed file, and date range
+        # Handle edge cases where some information might be None
+        if commit_summary:
+            print("Commit Summary:")
+            print(f"Total Commits: {commit_summary['total_commits']}")
+            print(f"Unique Authors: {commit_summary['unique_authors']}")
+            print(f"Most Active Author: {commit_summary['most_active_author']}")
+            print(f"Most Changed File: {commit_summary['most_changed_file']}")
+            print(f"Date Range: {commit_summary['date_range']}")
 
     except Exception as e:
         print(f"Error extracting git history: {e}")
