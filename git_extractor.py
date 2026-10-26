@@ -99,87 +99,44 @@ class GitHistoryExtractor:
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Extract and analyze git history")
+    parser.add_argument("repo_path", help="Path to the git repository")
+    parser.add_argument("--max-commits", type=int, default=10, help="Max number of commits to extract (default: 10)")
+    parser.add_argument("--author", help="Filter commits by author name")
+    parser.add_argument("--extensions", nargs="+", help="Filter by file extensions e.g. .py .js")
+    args = parser.parse_args()
+
     extractor = GitHistoryExtractor()
+    repo_path = args.repo_path
 
-    # Use current directory as the git repository
-    repo_path = "../chatbot"
-
-    # Check if we're in a git repository
     if not os.path.exists(os.path.join(repo_path, ".git")):
-        print("Not a git repository. Initializing a sample repo...")
-        # For demo purposes, we'll just show the class structure
-        print("GitHistoryExtractor initialized successfully!")
+        print("Not a git repository.")
         return
 
     try:
-        # Extract all commits first
-        commits = extractor.extract_commits(repo_path, max_commits=10)
+        commits = extractor.extract_commits(repo_path, max_commits=args.max_commits, author_filter=args.author, file_extensions=args.extensions)
 
-        # Display first few commits
-        print("\nAll recent commits:")
-        for i, commit in enumerate(commits[:3]):
-            print(f"{i+1}. {commit.hash[:8]} - {commit.message[:50]}...")
+        print("\nCommits:")
+        for i, commit in enumerate(commits):
+            print(f"{i+1}. {commit.hash[:8]} - {commit.message[:50]}")
             print(f"   Author: {commit.author}")
             print(f"   Date: {commit.date}")
             print()
 
-        # Reset the extractor and create a new instance
-        extractor = GitHistoryExtractor()
-        # Define an author name to filter by (e.g., "Alice")
-        author_filter = "Kiran"
-        # Call extract_commits with the author_filter parameter
-        filtered_commits = extractor.extract_commits(repo_path, max_commits=10, author_filter=author_filter)
-        # Display filtered commits with appropriate header
-        print(f"\nCommits by {author_filter}:\n")
-        for i, commit in enumerate(filtered_commits):
-            print(f"{i+1}. {commit.hash[:8]} - {commit.message[:50]}...")
-            print(f"   Author: {commit.author}")
-            print(f"   Date: {commit.date}")
-            print()
-        # Add logic to handle the case when no commits match the filter
         if not extractor.commits:
-            print("No commits found for this author.")
+            print("No commits found.")
+            return
 
-        print("#" * 100)
-        print()
-
-        # Call the get_file_change_count method and store the result
         result = extractor.get_file_change_count()
-        # Sort the files by change count (most frequent first)
-        sorted_result = sorted(result.items(), key=lambda x: x[1], reverse=True)
-        # Display the file change counts
-        print("File change counts (most frequent first):")
-        for file_change, count in sorted_result:
-            label = "change" if count == 1 else "changes"
-            print(f"{file_change}: {count} {label}")
-        # Handle the case where no file changes were found
-        if result is None:
-            print("No file changes found.")
+        if result:
+            print("File change counts (most frequent first):")
+            for file_change, count in sorted(result.items(), key=lambda x: x[1], reverse=True):
+                label = "change" if count == 1 else "changes"
+                print(f"{file_change}: {count} {label}")
 
-        print("#" * 100)
-
-        # Reset the extractor by creating a new instance
-        extractor = GitHistoryExtractor()
-        # Define a list of file extensions to filter by (e.g., ['.py'])
-        file_extensions = ['.py', '.js']
-        # Call extract_commits with the file_extensions parameter
-        filtered_commits = extractor.extract_commits(repo_path, max_commits=10, file_extensions=file_extensions)
-        # Display filtered commits with an appropriate header
-        print(f"\nCommits affecting {file_extensions} files:\n")
-        for i, commit in enumerate(filtered_commits):
-            print(f"{i+1}. {commit.hash[:8]} - {commit.message[:50]}...")
-            print(f"   Author: {commit.author}")
-            print(f"   Date: {commit.date}")
-            print()
-        # Handle the case when no commits match the filter
-        if not extractor.commits:
-            print("No commits found for these file types.")
-
-        #Call the generate_commit_summary method and store the result
+        print()
         commit_summary = extractor.generate_commit_summary()
-        # Add code to display the summary information with appropriate formatting
-        # Include total commits, unique authors, most active author, most changed file, and date range
-        # Handle edge cases where some information might be None
         if commit_summary:
             print("Commit Summary:")
             print(f"Total Commits: {commit_summary['total_commits']}")
