@@ -1,8 +1,9 @@
 import os
 import tempfile
 import unittest
-from datetime import datetime
-from repository_scanner import RepositoryScanner, CodeFile
+
+from core.scanner import RepositoryScanner
+
 
 class TestRepositoryScanner(unittest.TestCase):
     def setUp(self):

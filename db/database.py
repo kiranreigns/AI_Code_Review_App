@@ -1,7 +1,8 @@
 import os
+
+from models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base
 
 DATABASE_URL = os.getenv('DATABASE_URL',  'sqlite:///codebase.db')
 engine = create_engine(DATABASE_URL)

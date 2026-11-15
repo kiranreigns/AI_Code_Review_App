@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
 
 
 @dataclass
@@ -27,8 +26,8 @@ class FileChange:
 
 
 def link_commit_to_files(
-    commit: GitCommit, changes: List[FileChange]
-) -> List[FileChange]:
+    commit: GitCommit, changes: list[FileChange]
+) -> list[FileChange]:
     """
     Find all file changes that belong to a specific commit.
 

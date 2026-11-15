@@ -3,7 +3,9 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import datetime
 
-from git import Repo
+from git import InvalidGitRepositoryError, Repo
+from git.exc import GitCommandError
+
 
 @dataclass
 class GitCommit:
@@ -145,7 +147,7 @@ def main():
             print(f"Most Changed File: {commit_summary['most_changed_file']}")
             print(f"Date Range: {commit_summary['date_range']}")
 
-    except Exception as e:
+    except (GitCommandError, InvalidGitRepositoryError) as e:
         print(f"Error extracting git history: {e}")
 
 

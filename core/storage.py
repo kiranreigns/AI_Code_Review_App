@@ -1,6 +1,4 @@
 from db.models import CodeFile
-from db.database import get_session, init_db
-from core.scanner import RepositoryScanner
 
 
 def store_code_files(files, session):

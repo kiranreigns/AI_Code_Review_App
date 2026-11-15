@@ -1,6 +1,7 @@
 import os
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
+
 from db.models import CodeFile
 
 
@@ -46,7 +47,7 @@ class RepositoryScanner:
                         last_updated=datetime.now()
                     )
                     self.files.append(code_file)
-                except Exception as e:
+                except (OSError, UnicodeDecodeError) as e:
                     print(f"Error: {e}")
 
         print(f"Found {len(self.files)} files")

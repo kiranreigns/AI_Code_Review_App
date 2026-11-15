@@ -1,9 +1,7 @@
-from dataclasses import dataclass
-from datetime import datetime
-from typing import List
-
 # TODO: You might need to import additional modules for file path handling
 import os
+from dataclasses import dataclass
+from datetime import datetime
 
 
 @dataclass
