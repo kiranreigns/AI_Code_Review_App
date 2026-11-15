@@ -3,7 +3,7 @@ import os
 import sys
 from pathlib import Path
 from collections import Counter
-from scanner import RepositoryScanner
+from repository_scanner import RepositoryScanner
 from git_extractor import GitHistoryExtractor
 from git import Repo
 

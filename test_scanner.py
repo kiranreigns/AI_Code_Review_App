@@ -2,7 +2,7 @@ import os
 import tempfile
 import unittest
 from datetime import datetime
-from scanner import RepositoryScanner, CodeFile
+from repository_scanner import RepositoryScanner, CodeFile
 
 class TestRepositoryScanner(unittest.TestCase):
     def setUp(self):

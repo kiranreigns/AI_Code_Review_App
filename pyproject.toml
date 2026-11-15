@@ -1,9 +1,11 @@
 [project]
 name = "code-review-assistant"
 version = "0.1.0"
-description = "Add your description here"
+description = "This is a code review assistant"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "gitpython>=3.1.62",
+    "psycopg2-binary>=2.9.13",
+    "sqlalchemy>=2.1.6",
 ]
