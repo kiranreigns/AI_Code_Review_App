@@ -1,6 +1,6 @@
 import os
 
-from models import Base
+from db.models import Base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -13,8 +13,4 @@ def init_db():
     Base.metadata.create_all(bind=engine)
 
 def get_session():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    return SessionLocal()
