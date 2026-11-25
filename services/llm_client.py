@@ -28,7 +28,12 @@ File: {file_path}
 Diff:
 {diff}
 
-Focus on correctness bugs, security issues, readability and missing tests. \
+Provide a code review with exactly these sections:
+1. Summary of changes
+2. Potential issues (correctness bugs, security, missing tests)
+3. Suggestions for improvement
+4. Overall quality assessment
+
 Be specific and reference the relevant lines."""
 
 

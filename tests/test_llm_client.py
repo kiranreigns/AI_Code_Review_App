@@ -100,6 +100,9 @@ def test_review_diff_builds_prompt():
     llm.review_diff("a.py", "+print(1)", commit_message="add print")
     prompt = sdk.chat.completions.create.call_args.kwargs["messages"][0]["content"]
     assert "a.py" in prompt and "+print(1)" in prompt and "add print" in prompt
+    for section in ("Summary of changes", "Potential issues",
+                    "Suggestions for improvement", "Overall quality assessment"):
+        assert section in prompt
 
 
 def test_review_diff_truncates_large_diff():
