@@ -1,36 +1,35 @@
-from openai_setup import setup_openai_client
-import openai
+import functools
+import logging
 
-def generate_review(prompt):
+from services.llm_client import LLMClient, LLMError
+
+
+@functools.lru_cache(maxsize=1)
+def get_default_client():
+    """Create the shared LLMClient once and reuse it."""
+    return LLMClient()
+
+
+def generate_review(prompt, llm=None):
     """
-        Generate a code review based on the given prompt.
-        
-        Args:
-            prompt (str): The prompt describing the code to review
-            
-        Returns:
-            str: The generated review text
+    Generate a code review based on the given prompt.
+
+    Args:
+        prompt (str): The prompt describing the code to review
+        llm: Optional LLMClient. A shared default is used if omitted.
+
+    Returns:
+        str: The generated review text
+
+    Raises:
+        ValueError: If the prompt is empty
+        LLMError: If the review could not be generated
     """
+    return (llm or get_default_client()).complete(prompt)
 
-    # Call openai.chat.completions.create() with the following parameters:
-    # - model: "gpt-6-luna"
-    # - messages: a list containing a dictionary with "role" as "user" and "content" as the prompt
-    # - max_completion_tokens: 1000
-    response = openai.chat.completions.create(
-        model="gpt-6-luna",
-        messages=[{"role": "user", "content": prompt}],
-        max_completion_tokens=1000
-    )
-
-    # Extract and return the content from the first choice in the response
-    return response.choices[0].message.content
 
 def test_review():
     """Test the review generation with a simple code snippet"""
-    # Set up the OpenAI client
-    setup_openai_client()
-    
-    # Sample code to review
     code_snippet = """
     def calculate_sum(numbers):
         total = 0
@@ -38,15 +37,20 @@ def test_review():
             total += num
         return total
     """
-    
+
     prompt = f"Review this code snippet and provide feedback:\n\n{code_snippet}"
-    
-    # Generate and print the review
-    review = generate_review(prompt)
+
+    try:
+        review = generate_review(prompt)
+    except LLMError as e:
+        print(f"Could not generate review: {e}")
+        return
+
     print("\nGenerated Review:")
     print("-----------------")
     print(review)
 
+
 if __name__ == "__main__":
-    test_review()  
-   
+    logging.basicConfig(level=logging.INFO)
+    test_review()
